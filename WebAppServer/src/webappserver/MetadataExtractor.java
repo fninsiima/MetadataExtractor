@@ -5,11 +5,11 @@
  */
 package webappserver;
 
-import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
-
+import com.drew.metadata.exif.GpsDescriptor;
 
 
 import java.io.File;
@@ -25,13 +25,16 @@ public class MetadataExtractor {
      */
     public static void main( String[] args )
     {
-        String filename = "C:\\1.jpg";
+      
+        String filename = "C:\\negative288.jpg";
         try
         {
             File jpgFile = new File( filename );
-            Metadata metadata = JpegMetadataReader.readMetadata(jpgFile);
+            Metadata metadata = ImageMetadataReader.readMetadata(jpgFile);
 
             GpsDirectory gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+            GpsDescriptor gpsDesc = new GpsDescriptor(gpsDirectory);
+            
             if(gpsDirectory != null)
             {
                 GeoLocation location = gpsDirectory.getGeoLocation();
@@ -39,6 +42,8 @@ public class MetadataExtractor {
                 double lng = location.getLongitude();
                 System.out.println("Latitude: " + lat);
                 System.out.println("Longitude : " + lng);
+                System.out.println("Altitude : " + gpsDesc.getGpsAltitudeDescription());
+                System.out.println("GpsTimeStamp : " + gpsDesc.getGpsTimeStampDescription());
             }
             else
             {
